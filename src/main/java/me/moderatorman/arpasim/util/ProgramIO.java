@@ -28,4 +28,10 @@ public class ProgramIO implements IProgramIO
     {
         ctx.flush();
     }
+
+    @Override
+    public void disconnect()
+    {
+        ctx.disconnect();
+    }
 }
