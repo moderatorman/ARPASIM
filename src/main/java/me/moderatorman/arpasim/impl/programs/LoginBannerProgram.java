@@ -73,13 +73,13 @@ public class LoginBannerProgram extends AbstractProgram
         try (FileInputStream input = new FileInputStream(CONFIG_FILE))
         {
             properties.load(input);
-            String city = properties.getProperty("city", "Mountain View");
-            String region = properties.getProperty("region", "California");
-            String country = properties.getProperty("country", "USA");
-            return String.format("%s, %s, %s", city, region, country);
         } catch (IOException e) {
-            e.printStackTrace(System.err);
-            return "Unknown Location";
+            System.out.println("loginbanner.properties does not exist. Default location will be used (Mountain View, California, USA).");
         }
+
+        String city = properties.getProperty("city", "Mountain View");
+        String region = properties.getProperty("region", "California");
+        String country = properties.getProperty("country", "USA");
+        return String.format("%s, %s, %s", city, region, country);
     }
 }
