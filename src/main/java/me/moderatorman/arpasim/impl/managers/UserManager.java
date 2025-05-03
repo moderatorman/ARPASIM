@@ -1,6 +1,7 @@
 package me.moderatorman.arpasim.impl.managers;
 
 import com.google.gson.Gson;
+import me.moderatorman.arpasim.impl.ex.AlreadyAuthenticatedException;
 import me.moderatorman.arpasim.impl.ex.UserExistsException;
 import me.moderatorman.arpasim.impl.ex.UserNotFoundException;
 import me.moderatorman.arpasim.impl.users.Session;
@@ -21,6 +22,7 @@ public class UserManager
         User user = new User(name, password);
 
         File file = new File("users/" + name + ".json");
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
         if (file.exists()) throw new UserExistsException();
 
         try (FileWriter writer = new FileWriter(file))
@@ -31,9 +33,10 @@ public class UserManager
         }
     }
 
-    public static boolean authenticateUser(String name, String password, String ipAddress) throws UserNotFoundException
+    public static boolean authenticateUser(String name, String password, String ipAddress) throws UserNotFoundException, AlreadyAuthenticatedException
     {
         File file = new File("users/" + name + ".json");
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
         if (!file.exists()) throw new UserNotFoundException();
         try (FileReader reader = new FileReader(file))
         {
@@ -41,6 +44,7 @@ public class UserManager
             if (PasswordUtil.checkPassword(password, user.getHashedPassword()))
             {
                 Session session = getSession(ipAddress);
+                if (session.isLoggedIn()) throw new AlreadyAuthenticatedException();
                 if (session != null) session.setUser(user);
                 return true;
             }

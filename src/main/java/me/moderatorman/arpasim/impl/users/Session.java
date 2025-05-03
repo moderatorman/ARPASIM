@@ -13,7 +13,7 @@ public class Session
     {
         this.user = user;
         this.ipAddress = ipAddress;
-        this.sessionID = UUID.fromString(ipAddress + "-" + System.currentTimeMillis()).toString();
+        this.sessionID = UUID.nameUUIDFromBytes((ipAddress + "-" + System.currentTimeMillis()).getBytes()).toString();
     }
 
     public User getUser()

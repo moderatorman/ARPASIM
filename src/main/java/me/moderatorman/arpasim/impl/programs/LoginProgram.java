@@ -1,5 +1,6 @@
 package me.moderatorman.arpasim.impl.programs;
 
+import me.moderatorman.arpasim.impl.ex.AlreadyAuthenticatedException;
 import me.moderatorman.arpasim.impl.ex.UserNotFoundException;
 import me.moderatorman.arpasim.impl.managers.UserManager;
 import me.moderatorman.arpasim.util.IProgramIO;
@@ -27,6 +28,8 @@ public class LoginProgram extends AbstractProgram
             else ioHandler.println("Login failed (invalid password)!");
         } catch (UserNotFoundException e) {
             ioHandler.println("User not found (names are case-sensitive!). Please try again.");
+        } catch (AlreadyAuthenticatedException ex) {
+            ioHandler.println("You are already logged in! No need to do this.");
         }
     }
 }
