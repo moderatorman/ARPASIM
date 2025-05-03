@@ -1,5 +1,9 @@
 package me.moderatorman.arpasim.impl;
 
+import me.moderatorman.arpasim.impl.programs.AbstractProgram;
+import me.moderatorman.arpasim.impl.users.Badges;
+import me.moderatorman.arpasim.impl.users.Session;
+import me.moderatorman.arpasim.impl.users.User;
 import me.moderatorman.arpasim.util.LuaExtensionHook;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
@@ -40,6 +44,11 @@ public class LuaLoader
                         // Expose Java classes to Lua scripts
                         globals.set("HashMap", CoerceJavaToLua.coerce(HashMap.class));
                         globals.set("ArrayList", CoerceJavaToLua.coerce(ArrayList.class));
+                        globals.set("AbstractProgram", CoerceJavaToLua.coerce(AbstractProgram.class));
+                        globals.set("ProgramManager", CoerceJavaToLua.coerce(ProgramManager.class));
+                        globals.set("User", CoerceJavaToLua.coerce(User.class));
+                        globals.set("Session", CoerceJavaToLua.coerce(Session.class));
+                        globals.set("Badges", CoerceJavaToLua.coerce(Badges.class));
 
                         LuaValue chunk = globals.loadfile(luaFile.getAbsolutePath());
                         chunk.call();
