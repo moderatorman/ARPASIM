@@ -58,7 +58,7 @@ public class LoginBannerProgram extends AbstractProgram
         if (currentColumn != 0)
             commandsGrid.append("\n"); // Add a newline if the last row is incomplete
 
-        int userCount = UserManager.getActiveSessionCount(); //TODO: track online users
+        int userCount = UserManager.getActiveSessionCount();
 
         String banner = String.format(
                 "\r\n\r\nIt is %s on %s in %s.\n" +
