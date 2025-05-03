@@ -30,13 +30,20 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
         try
         {
             ProgramIO programIO = new ProgramIO(ctx);
-            Objects.requireNonNull(ProgramManager.getProgram("loginbanner")).execute(programIO, new String[]{});
-
             String ip = programIO.getIP();
             Session session = UserManager.getSession(ip);
             if (session != null) // user has existing session
+            {
                 ctx.write("Welcome back, " + session.getUser().getName() + "!\n");
-            else UserManager.createSession(ip); // create a new unauthenticated session
+                System.out.println("Session reactivated for " + session.getUser().getName() + " (IP: " + ip + ", ID: " + session.getID() + ")");
+            }
+            else {
+                UserManager.createSession(ip); // create a new unauthenticated session
+                session = UserManager.getSession(ip);
+                System.out.println("New session created from " + ip + " (ID: " + (session != null ? session.getID() : "N/A") + ")");
+            }
+
+            Objects.requireNonNull(ProgramManager.getProgram("loginbanner")).execute(programIO, new String[]{});
 
             ctx.writeAndFlush("> ");
         } catch (Exception ex) {
@@ -59,5 +66,16 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
             ctx.write("Unknown command: " + label + "\n");
         }
         ctx.writeAndFlush("> ");
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception
+    {
+        InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+        String ip = socketAddress.getAddress().getHostAddress();
+        Session session = UserManager.getSession(ip);
+        if (session != null)
+            session.setActive(false);
+        ctx.close();
     }
 }

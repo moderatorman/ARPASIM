@@ -67,4 +67,13 @@ public class UserManager
                 return session;
         return null;
     }
+
+    public static int getActiveSessionCount()
+    {
+        int count = 0;
+        for (Session session : activeSessions)
+            if (session.isActive())
+                count++;
+        return count;
+    }
 }
