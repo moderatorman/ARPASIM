@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import me.moderatorman.arpasim.impl.ProgramManager;
 import me.moderatorman.arpasim.impl.programs.AbstractProgram;
+import me.moderatorman.arpasim.impl.programs.ExitProgram;
 import me.moderatorman.arpasim.impl.programs.LoginBannerProgram;
 import me.moderatorman.arpasim.util.ProgramIO;
 
@@ -15,6 +16,7 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
     {
         // Register programs here
         ProgramManager.registerProgram(new LoginBannerProgram());
+        ProgramManager.registerProgram(new ExitProgram());
     }
 
 
