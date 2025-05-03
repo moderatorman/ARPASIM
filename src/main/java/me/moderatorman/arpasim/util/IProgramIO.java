@@ -6,5 +6,6 @@ public interface IProgramIO
     void println(String msg);
     void flush();
 
+    String getIP();
     void disconnect();
 }

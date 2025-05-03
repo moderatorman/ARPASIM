@@ -1,6 +1,6 @@
 package me.moderatorman.arpasim.impl.programs;
 
-import me.moderatorman.arpasim.impl.ProgramManager;
+import me.moderatorman.arpasim.impl.managers.ProgramManager;
 import me.moderatorman.arpasim.util.IProgramIO;
 
 import java.io.FileInputStream;

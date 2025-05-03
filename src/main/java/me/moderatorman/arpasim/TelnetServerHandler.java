@@ -2,13 +2,13 @@ package me.moderatorman.arpasim;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import me.moderatorman.arpasim.impl.ProgramManager;
-import me.moderatorman.arpasim.impl.programs.AbstractProgram;
-import me.moderatorman.arpasim.impl.programs.ExitProgram;
-import me.moderatorman.arpasim.impl.programs.HelpProgram;
-import me.moderatorman.arpasim.impl.programs.LoginBannerProgram;
+import me.moderatorman.arpasim.impl.managers.ProgramManager;
+import me.moderatorman.arpasim.impl.managers.UserManager;
+import me.moderatorman.arpasim.impl.programs.*;
+import me.moderatorman.arpasim.impl.users.Session;
 import me.moderatorman.arpasim.util.ProgramIO;
 
+import java.net.InetSocketAddress;
 import java.util.Objects;
 
 public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
@@ -19,6 +19,8 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
         ProgramManager.registerProgram(new LoginBannerProgram());
         ProgramManager.registerProgram(new ExitProgram());
         ProgramManager.registerProgram(new HelpProgram());
+        ProgramManager.registerProgram(new LoginProgram());
+        ProgramManager.registerProgram(new NewUserProgram());
     }
 
 
@@ -27,7 +29,15 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
     {
         try
         {
-            Objects.requireNonNull(ProgramManager.getProgram("loginbanner")).execute(new ProgramIO(ctx), new String[]{});
+            ProgramIO programIO = new ProgramIO(ctx);
+            Objects.requireNonNull(ProgramManager.getProgram("loginbanner")).execute(programIO, new String[]{});
+
+            String ip = programIO.getIP();
+            Session session = UserManager.getSession(ip);
+            if (session != null) // user has existing session
+                ctx.write("Welcome back, " + session.getUser().getName() + "!\n");
+            else UserManager.createSession(ip); // create a new unauthenticated session
+
             ctx.writeAndFlush("> ");
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
@@ -49,15 +59,5 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
             ctx.write("Unknown command: " + label + "\n");
         }
         ctx.writeAndFlush("> ");
-    }
-
-    private void launchUsenetInterface()
-    {
-        try
-        {
-            //
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
-        }
     }
 }

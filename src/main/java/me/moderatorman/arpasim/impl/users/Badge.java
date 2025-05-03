@@ -1,6 +1,6 @@
 package me.moderatorman.arpasim.impl.users;
 
-public enum Badges
+public enum Badge
 {
     ACCT,
     POSTMASTER,

@@ -1,4 +1,4 @@
-package me.moderatorman.arpasim.impl;
+package me.moderatorman.arpasim.impl.managers;
 
 import me.moderatorman.arpasim.impl.programs.AbstractProgram;
 

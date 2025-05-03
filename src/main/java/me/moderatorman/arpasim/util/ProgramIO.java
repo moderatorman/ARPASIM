@@ -2,6 +2,8 @@ package me.moderatorman.arpasim.util;
 
 import io.netty.channel.ChannelHandlerContext;
 
+import java.net.InetSocketAddress;
+
 public class ProgramIO implements IProgramIO
 {
     private ChannelHandlerContext ctx;
@@ -27,6 +29,12 @@ public class ProgramIO implements IProgramIO
     public void flush()
     {
         ctx.flush();
+    }
+
+    @Override
+    public String getIP()
+    {
+        return ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().getHostAddress();
     }
 
     @Override
