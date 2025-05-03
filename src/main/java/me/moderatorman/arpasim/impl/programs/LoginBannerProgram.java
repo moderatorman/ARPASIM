@@ -1,6 +1,7 @@
 package me.moderatorman.arpasim.impl.programs;
 
 import me.moderatorman.arpasim.impl.managers.ProgramManager;
+import me.moderatorman.arpasim.impl.managers.UserManager;
 import me.moderatorman.arpasim.util.IProgramIO;
 
 import java.io.FileInputStream;
@@ -42,11 +43,11 @@ public class LoginBannerProgram extends AbstractProgram
 
         // Format commands into a grid
         StringBuilder commandsGrid = new StringBuilder();
-        int columnCount = 4; // Number of columns in the grid
+        int columnCount = 6; // Number of columns in the grid
         int currentColumn = 0;
 
         for (String programName : uniqueProgramNames) {
-            commandsGrid.append(String.format("%-15s", programName)); // Adjust spacing as needed
+            commandsGrid.append(String.format("  %-15s", programName)); // Adjust spacing as needed
             currentColumn++;
             if (currentColumn == columnCount) {
                 commandsGrid.append("\n");
@@ -57,10 +58,10 @@ public class LoginBannerProgram extends AbstractProgram
         if (currentColumn != 0)
             commandsGrid.append("\n"); // Add a newline if the last row is incomplete
 
-        int userCount = 1; //TODO: track online users
+        int userCount = UserManager.getActiveSessionCount(); //TODO: track online users
 
         String banner = String.format(
-                "It is %s on %s in %s.\n" +
+                "\r\n\r\nIt is %s on %s in %s.\n" +
                         "There are %s local user(s) currently connected.\n\n" +
                         "May the command line live forever.\n\n" +
                         "Command, one of the following:\n%s\n" +
