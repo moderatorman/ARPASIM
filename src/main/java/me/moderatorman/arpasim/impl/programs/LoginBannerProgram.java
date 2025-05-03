@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.Set;
 
 public class LoginBannerProgram extends AbstractProgram
 {
@@ -32,17 +34,21 @@ public class LoginBannerProgram extends AbstractProgram
         // Fetch non-hidden commands from the ProgramManager
         ArrayList<AbstractProgram> visiblePrograms = ProgramManager.getVisiblePrograms();
 
+        // Use a Set to ensure unique program names
+        Set<String> uniqueProgramNames = new LinkedHashSet<>();
+        for (AbstractProgram program : visiblePrograms) {
+            uniqueProgramNames.add(program.getName());
+        }
+
         // Format commands into a grid
         StringBuilder commandsGrid = new StringBuilder();
         int columnCount = 4; // Number of columns in the grid
         int currentColumn = 0;
 
-        for (AbstractProgram program : visiblePrograms)
-        {
-            commandsGrid.append(String.format("%-15s", program.getName())); // Adjust spacing as needed
+        for (String programName : uniqueProgramNames) {
+            commandsGrid.append(String.format("%-15s", programName)); // Adjust spacing as needed
             currentColumn++;
-            if (currentColumn == columnCount)
-            {
+            if (currentColumn == columnCount) {
                 commandsGrid.append("\n");
                 currentColumn = 0;
             }
