@@ -1,5 +1,8 @@
 package me.moderatorman.arpasim.impl.users;
 
+import me.moderatorman.arpasim.impl.programs.AbstractProgram;
+import me.moderatorman.arpasim.util.ProgramIO;
+
 import java.util.UUID;
 
 public class Session
@@ -9,6 +12,8 @@ public class Session
     private String sessionID;
     private String currentDirectory = "/";
     private boolean active;
+    private Thread runningProgram;
+    private ProgramIO programIO;
 
     public Session(User user, String ipAddress)
     {
@@ -51,5 +56,23 @@ public class Session
     public void setActive(boolean flag)
     {
         active = flag;
+    }
+
+    public boolean isRunningProgram()
+    {
+        return runningProgram != null && runningProgram.isAlive();
+    }
+
+    public void setRunningProgram(Thread runningProgram, ProgramIO programIO)
+    {
+        if (runningProgram == null || programIO == null)
+            System.out.println("Running program was completed or invalidated (ID: " + getID() + ")");
+        this.runningProgram = runningProgram;
+        this.programIO = programIO;
+    }
+
+    public ProgramIO getProgramIO()
+    {
+        return programIO;
     }
 }

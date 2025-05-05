@@ -22,7 +22,7 @@ public class ProgramManager
     {
         for (AbstractProgram program : programs)
         {
-            if (program.getName().equalsIgnoreCase(name))
+            if (program.getLabel().equalsIgnoreCase(name))
             {
                 return program;
             }

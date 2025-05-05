@@ -15,6 +15,7 @@ public class TelnetServerInitializer extends ChannelInitializer<SocketChannel>
     {
         ChannelPipeline p = ch.pipeline();
         p.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+        p.addLast(new RawByteHandler());
         p.addLast(new StringDecoder());
         p.addLast(new StringEncoder());
         p.addLast(new TelnetServerHandler());

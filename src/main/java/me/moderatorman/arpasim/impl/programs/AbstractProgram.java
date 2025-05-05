@@ -1,47 +1,31 @@
 package me.moderatorman.arpasim.impl.programs;
 
-import me.moderatorman.arpasim.util.CommandExecutionPipe;
 import me.moderatorman.arpasim.util.IProgramIO;
 
 public abstract class AbstractProgram
 {
-    private String name;
+    private String label;
     private String description;
     private String usage;
     private boolean hidden = false;
-    private CommandExecutionPipe executionCallback;
 
-    public AbstractProgram(String name, String description, String usage)
+    public AbstractProgram(String label, String description, String usage)
     {
-        this(name, description, usage, false);
+        this(label, description, usage, false);
     }
 
-    public AbstractProgram(String name, String description, String usage, boolean hidden)
+    public AbstractProgram(String label, String description, String usage, boolean hidden)
     {
-        this.name = name;
+        this.label = label;
         this.description = description;
         this.usage = usage;
     }
 
-    public void callback(CommandExecutionPipe executionCallback)
-    {
-        this.executionCallback = executionCallback;
-    }
+    public void execute(IProgramIO ioHandler, String[] args) {}
 
-    public CommandExecutionPipe getExecutionCallback()
+    public String getLabel()
     {
-        return executionCallback;
-    }
-
-    public void execute(IProgramIO ioHandler, String[] args)
-    {
-        if (executionCallback != null && args != null)
-            executionCallback.flush(args);
-    }
-
-    public String getName()
-    {
-        return name;
+        return label;
     }
 
     public String getDescription()

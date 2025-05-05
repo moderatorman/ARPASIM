@@ -1,6 +1,6 @@
 package me.moderatorman.arpasim.impl.vfs;
 
-public class FileSystem
+public class VirtualFileSystem
 {
     //TODO
 }

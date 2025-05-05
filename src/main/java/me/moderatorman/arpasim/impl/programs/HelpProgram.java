@@ -16,7 +16,7 @@ public class HelpProgram extends AbstractProgram
         ioHandler.println("Available commands (including hidden):");
         for (AbstractProgram program : ProgramManager.getAllPrograms())
         {
-            ioHandler.println(" - " + program.getName() + ": " + program.getDescription());
+            ioHandler.println(" - " + program.getLabel() + ": " + program.getDescription());
         }
         ioHandler.flush();
     }

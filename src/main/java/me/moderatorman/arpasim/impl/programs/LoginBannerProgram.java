@@ -38,7 +38,7 @@ public class LoginBannerProgram extends AbstractProgram
         // Use a Set to ensure unique program names
         Set<String> uniqueProgramNames = new LinkedHashSet<>();
         for (AbstractProgram program : visiblePrograms) {
-            uniqueProgramNames.add(program.getName());
+            uniqueProgramNames.add(program.getLabel());
         }
 
         // Format commands into a grid
@@ -47,7 +47,7 @@ public class LoginBannerProgram extends AbstractProgram
         int currentColumn = 0;
 
         for (String programName : uniqueProgramNames) {
-            commandsGrid.append(String.format("  %-15s", programName)); // Adjust spacing as needed
+            commandsGrid.append(String.format("  %-10s", programName)); // Adjust spacing as needed
             currentColumn++;
             if (currentColumn == columnCount) {
                 commandsGrid.append("\n");

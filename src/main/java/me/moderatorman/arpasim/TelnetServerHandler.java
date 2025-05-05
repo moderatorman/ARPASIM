@@ -1,5 +1,7 @@
 package me.moderatorman.arpasim;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import me.moderatorman.arpasim.impl.managers.ProgramManager;
@@ -21,6 +23,7 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
         ProgramManager.registerProgram(new HelpProgram());
         ProgramManager.registerProgram(new LoginProgram());
         ProgramManager.registerProgram(new NewUserProgram());
+        ProgramManager.registerProgram(new MoreProgram());
     }
 
 
@@ -54,18 +57,59 @@ public class TelnetServerHandler extends SimpleChannelInboundHandler<String>
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg)
     {
+        String ip = ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().getHostAddress();
+        Session session = UserManager.getSession(ip);
+
+        if (session != null)
+        {
+            if (session.isRunningProgram())
+            {
+                ctx.write("Channel read failed. (program already running??)\n");
+                return;
+            }
+        } else {
+            // this realistically shouldn't ever happen
+            ctx.write("Channel read failed! (no session??)\n");
+            ctx.disconnect();
+            return;
+        }
+
         String label = msg.split(" ")[0];
         AbstractProgram program = ProgramManager.getProgram(label);
+
         if (program != null)
         {
             String[] args = msg.split(" ");
             String[] args2 = new String[args.length - 1];
             System.arraycopy(args, 1, args2, 0, args.length - 1);
-            program.execute(new ProgramIO(ctx), args2);
+            ProgramIO programIO = new ProgramIO(ctx);
+            Thread activeProgramThread = new Thread(() -> program.execute(programIO, args2));
+            activeProgramThread.start();
+            session.setRunningProgram(activeProgramThread, programIO);
+            waitForThread(ctx, activeProgramThread, session);
         } else {
-            ctx.write("Unknown command: " + label + "\n");
+            if (!session.isRunningProgram())
+                ctx.write("Unknown command: " + label + "\n");
+            else if (session.getProgramIO() != null) {
+                System.out.println("channelRead0: appending input to active program IO: " + msg);
+                session.getProgramIO().addInput(msg);
+            }
         }
-        ctx.writeAndFlush("> ");
+    }
+
+    private void waitForThread(ChannelHandlerContext ctx, Thread thread, Session session)
+    {
+        new Thread(() ->
+        {
+            try
+            {
+                thread.join(); // Wait for the program thread to finish
+            } catch (InterruptedException e) {
+                e.printStackTrace(System.err);
+            }
+            session.setRunningProgram(null, null);
+            ctx.writeAndFlush("> ");
+        }).start();
     }
 
     @Override
